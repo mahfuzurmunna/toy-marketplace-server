@@ -41,9 +41,16 @@ async function run() {
 
     //getting data from database to server side
     app.get("/alltoys", async (req, res) => {
-      const cursor = toyCollection.find();
+      const { toyName } = req.query;
+      let query = {};
+
+      if (toyName) {
+        query = { name: { $regex: toyName, $options: "i" } };
+      }
+
+      const cursor = toyCollection.find(query);
       const result = await cursor.limit(20).toArray();
-      res.send(result);
+      res.json(result);
     });
 
     //getting indvidual email data from server to client
