@@ -33,9 +33,7 @@ async function run() {
     // getting data from client to database
     app.post("/alltoys", async (req, res) => {
       const receivedToy = req.body;
-      // console.log(receivedToy);
       const result = await toyCollection.insertOne(receivedToy);
-
       res.send(result);
     });
 
@@ -43,11 +41,9 @@ async function run() {
     app.get("/alltoys", async (req, res) => {
       const { toyName } = req.query;
       let query = {};
-
       if (toyName) {
         query = { name: { $regex: toyName, $options: "i" } };
       }
-
       const cursor = toyCollection.find(query);
       const result = await cursor.limit(20).toArray();
       res.json(result);
@@ -56,21 +52,15 @@ async function run() {
     //getting specific toy details from database to server side
     app.get("/alltoys/:id", async (req, res) => {
       const id = req.params.id;
-      // const id = req.params.id;
-      console.log(id);
       const query = { _id: new ObjectId(id) };
-
       const result = await toyCollection.findOne(query);
       res.send(result);
     });
 
     // getting indvidual email data from server to client
-    app.get("/alltoys/:email&:view", async (req, res) => {
-      console.log(req.params);
-
+    app.get("/alltoy/:email&:view", async (req, res) => {
       const sellerEmail = req.params.email;
       const view = req.params.view;
-
       const query = {
         email: sellerEmail,
       };
