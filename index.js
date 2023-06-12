@@ -33,7 +33,7 @@ async function run() {
     // getting data from client to database
     app.post("/alltoys", async (req, res) => {
       const receivedToy = req.body;
-      console.log(receivedToy);
+      // console.log(receivedToy);
       const result = await toyCollection.insertOne(receivedToy);
 
       res.send(result);
@@ -53,19 +53,33 @@ async function run() {
       res.json(result);
     });
 
-    //getting indvidual email data from server to client
+    //getting specific toy details from database to server side
+    app.get("/alltoys/:id", async (req, res) => {
+      const id = req.params.id;
+      // const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+
+      const result = await toyCollection.findOne(query);
+      res.send(result);
+    });
+
+    // getting indvidual email data from server to client
     app.get("/alltoys/:email&:view", async (req, res) => {
-      console.log(req.query);
+      console.log(req.params);
+
       const sellerEmail = req.params.email;
       const view = req.params.view;
-      console.log(view);
+
       const query = {
-        email: sellerEmail
+        email: sellerEmail,
       };
+
       const result = await toyCollection
         .find(query)
         .sort({ price: view })
         .toArray();
+
       res.send(result);
     });
 
